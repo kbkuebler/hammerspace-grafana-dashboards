@@ -13,7 +13,6 @@ import json
 import urllib
 import getpass
 import yaml
-import time
 import urllib3
 import requests as rq
 
@@ -74,40 +73,6 @@ def dashboard_exists(uid):
     return (resp.status_code == 200)
 
 
-def set_datasource_to_prometheus(dashboard_json):
-    """
-    Force all data source references to 'Prometheus' in the dashboard JSON.
-    This is a simplistic approach:
-        - If dashboards have 'datasource' fields in panels, set them to 'Prometheus'
-        - If dashboards use templating variables for the datasource, also force them to 'Prometheus'
-    """
-    dash = dashboard_json.get('dashboard', dashboard_json)  # Some JSONs wrap in "dashboard"
-
-    # 1) Update templating (if any)
-    templating = dash.get('templating', {}).get('list', [])
-    for variable in templating:
-        if variable.get('type') == 'datasource':
-            variable['query'] = 'Prometheus'
-            variable['name'] = 'Prometheus'
-            variable['options'] = []
-        if variable.get('type') == 'query':
-            print(f"   Updating variable {variable['name']} to data source UUID {GRAFANA_PROMETHEUS_UID}")
-            variable['datasource']['uid'] = GRAFANA_PROMETHEUS_UID
-
-    # 2) Update each panel's datasource (if a panel is a dict with 'datasource')
-    for panel in dash.get('panels', []):
-        if isinstance(panel, dict) and 'datasource' in panel:
-            panel['datasource'] = 'Prometheus'
-        # If panels have nested panels (e.g. row panels), update them too
-        if 'panels' in panel:
-            for sub_panel in panel['panels']:
-                if 'datasource' in sub_panel:
-                    sub_panel['datasource'] = 'Prometheus'
-
-    # Return updated
-    return dash
-
-
 def install_dashboards_from_path(args, folder_id, path_glob):
     """
     Install or update all dashboards found at path_glob (e.g. ../5.1/*.json)
@@ -136,16 +101,12 @@ def install_dashboards_from_path(args, folder_id, path_glob):
             print('Aborting')
             sys.exit(1)
 
-        # Force data sources to existing Prometheus datasource uuid
-        #updated_dashboard = set_datasource_to_prometheus(dashboard_json)
-        updated_dashboard = dashboard_json
-
         # Check if the dashboard already exists
         if uid and dashboard_exists(uid):
             choice = 'n'
             if not args.force:
-                print(f"\nDashboard '{updated_dashboard.get('title')}' with UID '{uid}' already exists.")
-                choice = input("Do you want to remove it and reinstall? [y/N]: ").strip().lower()
+                print(f"\nDashboard '{dashboard_json.get('title')}' with UID '{uid}' already exists.")
+                choice = input("Do you want to overwrite? [y/N]: ").strip().lower()
 
             if (not args.force) and (not choice.startswith('y')):
                 print("Skipping reinstall")
@@ -154,7 +115,7 @@ def install_dashboards_from_path(args, folder_id, path_glob):
         # Now upload (create or update) the dashboard
         post_url = f"{GRAFANA_URL}/api/dashboards/db"
         payload = {
-            "dashboard": updated_dashboard,
+            "dashboard": dashboard_json,
             "folderId": folder_id,
             "overwrite": True,
             # Use inputs to specify the value of, this doesn't seem to work :(
@@ -256,6 +217,7 @@ def setup_prometheus_datasource_in_grafana(args):
 #
 # Prometheus Config Generation
 #
+
 
 class AnvilSM(object):
     """This class is for common/simple interactions with datasphere's REST api,
@@ -504,11 +466,12 @@ def build_prometheus_config(args):
     scr_conf = []
     prom_config['scrape_configs'] = scr_conf
     scr_conf.append(
-        {'job_name': 'prometheus',
-         'static_configs': [
-            {'labels': {'node_type': 'prometheus'}},
-            {'targets': ['localhost:9090']}
-         ],
+        {
+            'job_name': 'prometheus',
+            'static_configs': [
+                {'labels': {'node_type': 'prometheus'}},
+                {'targets': ['localhost:9090']}
+            ],
         },
     )
 

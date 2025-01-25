@@ -1,2 +1,4 @@
 installers/config_tooling.ini
 installers/prometheus.yml
+*.swp
+*.swo

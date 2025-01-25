@@ -113,3 +113,4 @@ Go to a dashboard that is having issues, on newer versions of grafna click _Edit
 Check that data is arriving at prometheus, it can be reached at http://<grafana_prometheus_hostname>:9090
 
 
+See grafana logs, may be in /var/log/grafana/* may also change log in grafana.ini to `level = debug`

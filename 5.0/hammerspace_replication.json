@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "11.0.0"
+      "version": "11.4.0"
     },
     {
       "type": "datasource",
@@ -57,7 +57,6 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
@@ -89,6 +88,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -156,8 +156,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -191,6 +190,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -258,8 +258,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -294,6 +293,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -360,8 +360,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -380,10 +379,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "g940I6xMk"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -392,15 +387,6 @@
       },
       "id": 91,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "g940I6xMk"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Send rate and success vs failure",
       "type": "row"
     },
@@ -421,6 +407,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -490,8 +477,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -611,7 +597,6 @@
         }
       },
       "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -717,7 +702,6 @@
         }
       },
       "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -823,7 +807,6 @@
         }
       },
       "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -929,7 +912,6 @@
         }
       },
       "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -1035,7 +1017,6 @@
         }
       },
       "pluginVersion": "9.2.3",
-      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -1099,10 +1080,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "g940I6xMk"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1111,15 +1088,6 @@
       },
       "id": 65,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "g940I6xMk"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Merge attempts",
       "type": "row"
     },
@@ -1516,11 +1484,21 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
-  "schemaVersion": 39,
+  "refresh": "",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
+      {
+        "current": {},
+        "label": "Datasource",
+        "name": "DS_PROMETHEUS",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
       {
         "current": {},
         "datasource": {
@@ -1528,10 +1506,8 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(hammerspace_filesystem_exporter_build_info, job)",
-        "hide": 0,
         "includeAll": false,
         "label": "Job",
-        "multi": false,
         "name": "job",
         "options": [],
         "query": {
@@ -1540,12 +1516,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "current": {},
@@ -1554,7 +1526,6 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(hammerspace_filesystem_exporter_build_info{job=~\"$job\"}, instance)",
-        "hide": 0,
         "includeAll": true,
         "label": "Host:",
         "multi": true,
@@ -1566,12 +1537,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "current": {},
@@ -1580,7 +1547,6 @@
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(hammerspace_filesystem_ops,share)",
-        "hide": 0,
         "includeAll": true,
         "label": "Share",
         "multi": true,
@@ -1592,12 +1558,7 @@
         },
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       }
     ]
   },
@@ -1605,35 +1566,10 @@
     "from": "now-6h",
     "to": "now"
   },
-  "timeRangeUpdatedDuringEditOrView": false,
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "utc",
   "title": "Hammerspace Filesystem Replication 5.0",
   "uid": "cdql1r8eqmwhse",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
