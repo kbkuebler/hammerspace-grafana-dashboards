@@ -1,0 +1,37 @@
+scrape_configs:
+- job_name: prometheus
+  static_configs:
+  - labels:
+      node_type: prometheus
+    targets:
+    - localhost:9090
+### Add your hammerspace cluster
+- job_name: cluster
+  static_configs:
+  - labels:
+      cluster: :t.:t
+      instance: :t.:t
+      node_type: clusterip
+    targets:
+    - 10.0.0.71:9101
+    - 10.0.0.71:9102
+    - 10.0.0.71:9103
+
+- job_name: anvil_nodes
+  static_configs:
+  - labels:
+      cluster: :t.:t
+      instance: :t-:.:t
+      node_type: anvil
+    targets:
+    - `:9100
+
+- job_name: dsx_nodes
+  static_configs:
+  - labels:
+      cluster: :t.:t
+      instance: :t-rst.:t
+      node_type: dsx
+    targets:
+    - rst:9100
+    - rst:9105
